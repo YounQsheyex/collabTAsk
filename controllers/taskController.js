@@ -16,6 +16,8 @@ const createTask = async (req, res) => {
   }
 };
 
+
+  
 // get all task
 const getAllTask = async (req, res) => {
     try {
@@ -45,4 +47,5 @@ const getAllTask = async (req, res) => {
 // delete task
 
 module.exports = { createTask, getAllTask };
+
 
