@@ -7,7 +7,7 @@ const createTask = async (req, res) => {
     const { title } = newTask;
     const taskExist = await TASK.findOne({ title });
     if (taskExist) {
-      res.status(400).json({ message: "Task Already Exist" });
+      return res.status(400).json({ message: "Task Already Exist" });
     }
     const saveTask = await newTask.save();
     res.status(201).json({ message: "Task Created Successfully", saveTask });
@@ -16,29 +16,26 @@ const createTask = async (req, res) => {
   }
 };
 
-
-  
 // get all task
 const getAllTask = async (req, res) => {
-    try {
-        const tasks = await TASK.find()
+  try {
+    const tasks = await TASK.find();
 
-        res.status(200).json({
-            success: true,
-            message: "Tasks fetched successfully",
-            data: tasks
-        })
-    } catch (error) {
-        console.error("Error fetching:", error.message);
+    res.status(200).json({
+      success: true,
+      message: "Tasks fetched successfully",
+      data: tasks,
+    });
+  } catch (error) {
+    console.error("Error fetching:", error.message);
 
-        res.status(500).json({
-            success: false,
-            message: "Server error while fetching tasks",
-            error: error.message
-        })
-    }
-
-}
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching tasks",
+      error: error.message,
+    });
+  }
+};
 
 // get single task
 
@@ -47,5 +44,3 @@ const getAllTask = async (req, res) => {
 // delete task
 
 module.exports = { createTask, getAllTask };
-
-
