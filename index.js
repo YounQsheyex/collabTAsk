@@ -15,6 +15,11 @@ app.get("/", (req, res) => {
 
 app.use("/api/task", taskRoutes);
 
+// error routes
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "ROUTE NOT FOUND" });
+});
+
 const startServer = async (req, res) => {
   try {
     await mongoose.connect(process.env.MONGO_URL, { dbName: "COLLAB" });
