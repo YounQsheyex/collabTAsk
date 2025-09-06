@@ -4,10 +4,15 @@ const TASK = require("../models/taskmodel");
 const createTask = async (req, res) => {
   try {
     const newTask = new TASK(req.body);
-    const { title } = newTask;
+    const { title, description } = newTask;
     const taskExist = await TASK.findOne({ title });
     if (taskExist) {
       return res.status(400).json({ message: "Task Already Exist" });
+    }
+    if (!title || !description) {
+      return res
+        .status(400)
+        .json({ message: "Title and description are required" });
     }
     const saveTask = await newTask.save();
     res.status(201).json({ message: "Task Created Successfully", saveTask });
