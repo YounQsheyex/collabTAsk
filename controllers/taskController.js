@@ -4,10 +4,15 @@ const TASK = require("../models/taskmodel");
 const createTask = async (req, res) => {
   try {
     const newTask = new TASK(req.body);
-    const { title } = newTask;
+    const { title, description } = newTask;
     const taskExist = await TASK.findOne({ title });
     if (taskExist) {
       return res.status(400).json({ message: "Task Already Exist" });
+    }
+    if (!title || !description) {
+      return res
+        .status(400)
+        .json({ message: "Title and description are required" });
     }
     const saveTask = await newTask.save();
     res.status(201).json({ message: "Task Created Successfully", saveTask });
@@ -38,9 +43,53 @@ const getAllTask = async (req, res) => {
 };
 
 // get single task
+/*---------------------------------------
+======= BY EZEKIEL ===============
+----------------------------------------*/
 
+const getSingleTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const task = await TASK.findById(id);
+    if (!task) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Task not found" });
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Task found successfully", task });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// EDIT/DELETE BY DAYO
 // edit task
-
+   const updateTask = async (req,res)=>{
+    const {id} = req.params
+    try {
+        const task = await TASK.findByIdAndUpdate({_id:id},req.body,  {new: true, runValidators: true})
+        if(!task){
+         return  res.status(404).json({message:'task not found'})
+        }
+        res.status(200).json({success:true ,task})
+    } catch (error) {
+         res.status(500).json({success: false, message: error.message})
+    }
+   }
 // delete task
-
-module.exports = { createTask, getAllTask };
+  const deleteTask = async(req,res)=>{
+    const {id} = req.params
+    try {
+        const task = await TASK.findByIdAndDelete({_id:id})
+        if(!task){
+            res.status(404).json({message:'task not found'})
+        }
+        res.status(200).json({message:'task has been removed'})
+    } catch (error) {
+        res.status(500).json({success: false, message: error.message})
+    }
+  }
+module.exports = { createTask, getAllTask, getSingleTask, updateTask,deleteTask };
